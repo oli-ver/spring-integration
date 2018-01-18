@@ -1,0 +1,4 @@
+# Tooling related information for the integration zmq namespace
+http\://www.springframework.org/schema/integration/zmqadapter@name=integration zmq Namespace
+http\://www.springframework.org/schema/integration/zmqadapter@prefix=int-zmq
+http\://www.springframework.org/schema/integration/zmqadapter@icon=org/springframework/integration/config/xml/spring-integration-zmq.gif

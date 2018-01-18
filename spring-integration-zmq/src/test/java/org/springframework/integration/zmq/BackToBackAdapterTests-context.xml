@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:int="http://www.springframework.org/schema/integration"
+	   xmlns:int-zmq="http://www.springframework.org/schema/integration/zmq"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
+		http://www.springframework.org/schema/integration/zmq http://www.springframework.org/schema/integration/zmq/spring-integration-zmq.xsd">
+
+	<int-zmq:outbound-channel-adapter id="out" url="tcp://*:5556"
+									   client-id="out"
+									   client-factory="outClientFactory" />
+
+	<int-zmq:message-driven-channel-adapter id="inbound" url="tcp://localhost:5556"
+											 client-factory="inClientFactory"
+											 client-id="in" channel="in" />
+
+	<int:channel id="in">
+		<int:queue />
+	</int:channel>
+
+	<bean id="outClientFactory" class="org.springframework.integration.zmq.core.DefaultZmqClientFactory">
+		<property name="clientType" value="1"/>
+	</bean>
+	<bean id="inClientFactory"  class="org.springframework.integration.zmq.core.DefaultZmqClientFactory">
+		<property name="clientType" value="2"/>
+	</bean>
+
+</beans>

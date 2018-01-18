@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:int="http://www.springframework.org/schema/integration"
+	   xmlns:int-zmq="http://www.springframework.org/schema/integration/zmq"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
+		http://www.springframework.org/schema/integration/zmq http://www.springframework.org/schema/integration/zmq/spring-integration-zmq.xsd">
+
+	<int:channel id="target"/>
+
+	<int-zmq:outbound-channel-adapter id="withConverter"
+									  client-id="serverId1"
+									  url="tcp://*:5559"
+									  auto-startup="false"
+									  converter="myConverter"
+									  client-factory="clientFactory"
+									  topic="zmq-foo"
+									  channel="target"/>
+
+	<int-zmq:outbound-channel-adapter id="withDefaultConverter"
+									  client-id="serverId2"
+									  url="tcp://*:5560"
+									  auto-startup="false"
+									  client-factory="clientFactory"
+									  topic="zmq-foo"
+									  channel="target"/>
+
+	<bean id="myConverter" class="org.springframework.integration.zmq.support.DefaultZmqMessageConverter"/>
+
+	<bean id="clientFactory" class="org.springframework.integration.zmq.core.DefaultZmqClientFactory"/>
+</beans>

@@ -98,6 +98,7 @@ ext {
 	springWsVersion = '3.0.8.RELEASE'
 	tomcatVersion = "9.0.31"
 	xstreamVersion = '1.4.11.1'
+	jeroMqVersion = '0.5.1'
 
 	javaProjects = subprojects - project(':spring-integration-bom')
 }
@@ -802,6 +803,14 @@ project('spring-integration-xmpp') {
 
 		testImplementation project(':spring-integration-stream')
 		testImplementation "org.igniterealtime.smack:smack-experimental:$smackVersion"
+	}
+}
+
+project('spring-integration-zmq') {
+	description = 'Spring Integration Zeromq Support'
+	dependencies {
+		compile project(":spring-integration-core")
+		compile "org.zeromq:jeromq:$jeroMqVersion"
 	}
 }
 
