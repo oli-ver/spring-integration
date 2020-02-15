@@ -22,9 +22,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledFuture;
 
-import org.zeromq.ZMQ;
-import org.zeromq.ZMQException;
-
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.integration.zmq.core.ConsumerStopAction;
@@ -35,6 +32,9 @@ import org.springframework.integration.zmq.event.ZmqSubscribedEvent;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessagingException;
 import org.springframework.util.Assert;
+import org.zeromq.SocketType;
+import org.zeromq.ZMQ;
+import org.zeromq.ZMQException;
 
 /**
  * Jeromq Implementation.
@@ -99,7 +99,7 @@ public class ZmqMessageDrivenChannelAdapter extends AbstractZmqMessageDrivenChan
 	 * @param clientId The client id.
 	 */
 	public ZmqMessageDrivenChannelAdapter(String url, String clientId) {
-		this(url, clientId, new DefaultZmqClientFactory(ZMQ.SUB));
+		this(url, clientId, new DefaultZmqClientFactory(SocketType.SUB));
 	}
 
 	/**
@@ -204,7 +204,7 @@ public class ZmqMessageDrivenChannelAdapter extends AbstractZmqMessageDrivenChan
 		try {
 			if (this.client != null) {
 				this.client.unsubscribe(topic.getBytes(Charset.defaultCharset()));
-				if (this.clientFactory.getClientType() == ZMQ.SUB) {
+				if (this.clientFactory.getClientType() == SocketType.SUB) {
 					this.client.subscribe("".getBytes(Charset.defaultCharset()));
 				}
 			}

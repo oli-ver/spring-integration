@@ -18,11 +18,11 @@ package org.springframework.integration.zmq.core;
 
 import java.nio.charset.Charset;
 
+import org.springframework.util.Assert;
+import org.zeromq.SocketType;
 import org.zeromq.ZAuth;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
-
-import org.springframework.util.Assert;
 
 /**
  * Creates a default {@link ZmqClientFactory} and a set of options as configured.
@@ -35,7 +35,7 @@ public class DefaultZmqClientFactory implements ZmqClientFactory {
 
 	private volatile boolean cleanSession;
 
-	private volatile int clientType;
+	private volatile SocketType clientType;
 
 	private volatile int ioThreads = 1;
 
@@ -56,7 +56,7 @@ public class DefaultZmqClientFactory implements ZmqClientFactory {
 		this.cleanSession = cleanSession;
 	}
 
-	public void setClientType(int clientType) {
+	public void setClientType(SocketType clientType) {
 		this.clientType = clientType;
 	}
 
@@ -83,10 +83,10 @@ public class DefaultZmqClientFactory implements ZmqClientFactory {
 	}
 
 	public DefaultZmqClientFactory() {
-		this.clientType = -1;
+		
 	}
 
-	public DefaultZmqClientFactory(int clientType) {
+	public DefaultZmqClientFactory(SocketType clientType) {
 		this.clientType = clientType;
 	}
 
@@ -148,7 +148,7 @@ public class DefaultZmqClientFactory implements ZmqClientFactory {
 
 	@Override
 	public ZMQ.Socket getClientInstance(String clientId, String... topic) {
-		Assert.isTrue(this.clientType >= 0,
+		Assert.isTrue(this.clientType.type >= 0,
 				"Set Client Socket-Type using clientFactory.setClientType");
 
 		if (this.getUserName() != null && this.getPassword() != null) {
@@ -160,10 +160,10 @@ public class DefaultZmqClientFactory implements ZmqClientFactory {
 
 		this.client.setIdentity(clientId.getBytes(Charset.defaultCharset()));
 
-		if (topic.length == 1 && topic[0] != null && this.clientType == ZMQ.SUB) {
+		if (topic.length == 1 && topic[0] != null && this.clientType == SocketType.SUB) {
 			this.client.subscribe(topic[0].getBytes(Charset.defaultCharset()));
 		}
-		else if (this.clientType == ZMQ.SUB) {
+		else if (this.clientType == SocketType.SUB) {
 			this.client.subscribe("".getBytes(Charset.defaultCharset()));
 		}
 
@@ -195,7 +195,7 @@ public class DefaultZmqClientFactory implements ZmqClientFactory {
 	}
 
 	@Override
-	public int getClientType() {
+	public SocketType getClientType() {
 		return this.clientType;
 	}
 }

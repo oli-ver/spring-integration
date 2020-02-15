@@ -16,49 +16,22 @@
 
 package org.springframework.integration.zmq;
 
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.lessThanOrEqualTo;
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willAnswer;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyInt;
-import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-
-import org.apache.commons.logging.Log;
-import org.junit.Test;
-
-import org.mockito.internal.stubbing.answers.CallsRealMethods;
-import org.springframework.beans.DirectFieldAccessor;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.integration.channel.NullChannel;
-import org.springframework.integration.test.util.TestUtils;
-import org.springframework.integration.zmq.event.ZmqIntegrationEvent;
-import org.springframework.integration.zmq.event.ZmqSubscribedEvent;
-import org.springframework.integration.zmq.inbound.ZmqMessageDrivenChannelAdapter;
-import org.springframework.integration.zmq.outbound.ZmqMessageHandler;
-import org.springframework.integration.zmq.support.DefaultZmqMessageConverter;
-import org.springframework.messaging.support.GenericMessage;
-import org.springframework.scheduling.TaskScheduler;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
-import org.springframework.util.ReflectionUtils;
-import org.zeromq.ZAuth;
-import org.zeromq.ZContext;
-import org.zeromq.ZMQ;
-
-import org.springframework.integration.zmq.core.ConsumerStopAction;
-import org.springframework.integration.zmq.core.DefaultZmqClientFactory;
-import org.zeromq.ZMQException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -70,6 +43,31 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+
+import org.apache.commons.logging.Log;
+import org.junit.Test;
+import org.mockito.internal.stubbing.answers.CallsRealMethods;
+import org.springframework.beans.DirectFieldAccessor;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.integration.channel.NullChannel;
+import org.springframework.integration.test.util.TestUtils;
+import org.springframework.integration.zmq.core.ConsumerStopAction;
+import org.springframework.integration.zmq.core.DefaultZmqClientFactory;
+import org.springframework.integration.zmq.event.ZmqIntegrationEvent;
+import org.springframework.integration.zmq.event.ZmqSubscribedEvent;
+import org.springframework.integration.zmq.inbound.ZmqMessageDrivenChannelAdapter;
+import org.springframework.integration.zmq.outbound.ZmqMessageHandler;
+import org.springframework.integration.zmq.support.DefaultZmqMessageConverter;
+import org.springframework.messaging.support.GenericMessage;
+import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.util.ReflectionUtils;
+import org.zeromq.SocketType;
+import org.zeromq.ZAuth;
+import org.zeromq.ZContext;
+import org.zeromq.ZMQ;
+import org.zeromq.ZMQException;
 
 /**
  * @author Subhobrata Dey
@@ -85,7 +83,7 @@ public class ZmqAdapterTests {
 		factory.setCleanSession(false);
 		factory.setPassword("password");
 		factory.setUserName("username");
-		factory.setClientType(ZMQ.PUB);
+		factory.setClientType(SocketType.PUB);
 		factory.setServerURI("tcp://*:5556");
 		factory.setConsumerStopAction(ConsumerStopAction.UNSUBSCRIBE_ALWAYS);
 
@@ -102,7 +100,7 @@ public class ZmqAdapterTests {
 		factory.setCleanSession(false);
 		factory.setPassword("password");
 		factory.setUserName("username");
-		factory.setClientType(ZMQ.PUB);
+		factory.setClientType(SocketType.PUB);
 		factory.setServerURI("tcp://*:5556");
 
 		factory = spy(factory);
@@ -155,7 +153,7 @@ public class ZmqAdapterTests {
 		factory.setCleanSession(false);
 		factory.setPassword("password");
 		factory.setUserName("username");
-		factory.setClientType(ZMQ.SUB);
+		factory.setClientType(SocketType.SUB);
 		factory.setServerURI("tcp://localhost:5556");
 
 		factory = spy(factory);
@@ -283,7 +281,7 @@ public class ZmqAdapterTests {
 		adapter.start();
 		adapter.connectionLost(new RuntimeException("initial"));
 		Thread.sleep(1000);
-		assertThat(attemptingReconnectCount.get(), lessThanOrEqualTo(2));
+		assertTrue(attemptingReconnectCount.get() <= 2);
 		adapter.stop();
 		taskScheduler.destroy();
 	}
@@ -294,7 +292,7 @@ public class ZmqAdapterTests {
 		factory.setCleanSession(false);
 		factory.setPassword("password");
 		factory.setUserName("username");
-		factory.setClientType(ZMQ.SUB);
+		factory.setClientType(SocketType.SUB);
 
 		factory = spy(factory);
 		ZMQ.Socket client = mock(ZMQ.Socket.class);

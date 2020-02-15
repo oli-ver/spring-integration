@@ -16,6 +16,7 @@
 
 package org.springframework.integration.zmq.core;
 
+import org.zeromq.SocketType;
 import org.zeromq.ZAuth;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
@@ -72,10 +73,12 @@ public interface ZmqClientFactory {
 
 	/**
 	 * Get the client type.
-	 * @return the client type, for example ZMQ.PUB, ZMQ.SUB, ZMQ.PUSH, ZMQ.PULL, ZMQ.REQ, ZMQ.REP
+	 * 
+	 * @return the client type, for example SocketType.PUB, SocketType.SUB,
+	 *         SocketType.PUSH, SocketType.PULL, SocketType.REQ, SocketType.REP
 	 * @since 4.3
 	 */
-	int getClientType();
+	SocketType getClientType();
 
 	/**
 	 * Get the consumer stop action.

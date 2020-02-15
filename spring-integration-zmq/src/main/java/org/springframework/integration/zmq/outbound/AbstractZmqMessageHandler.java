@@ -110,7 +110,7 @@ public abstract class AbstractZmqMessageHandler extends AbstractMessageHandler i
 	}
 
 	@Override
-	protected void onInit() throws Exception {
+	protected void onInit() {
 		super.onInit();
 		if (this.topicProcessor instanceof BeanFactoryAware && getBeanFactory() != null) {
 			((BeanFactoryAware) this.topicProcessor).setBeanFactory(getBeanFactory());
@@ -148,11 +148,16 @@ public abstract class AbstractZmqMessageHandler extends AbstractMessageHandler i
 	}
 
 	@Override
-	protected void handleMessageInternal(Message<?> message) throws Exception {
+	protected void handleMessageInternal(Message<?> message) {
 		Object zmqMessage = this.converter.fromMessage(message, Object.class);
 		String currentTopic = this.topicProcessor.processMessage(message);
 
-		this.publish(currentTopic == null ? this.topic : currentTopic, zmqMessage, message);
+		try {
+			this.publish(currentTopic == null ? this.topic : currentTopic, zmqMessage, message);
+		}
+		catch (Exception e) {
+			this.logger.error("Error when internally handling message: " + e.getMessage(), e);
+		}
 	}
 
 	protected abstract void publish(String topic, Object zmqMessage, Message<?> message) throws Exception;

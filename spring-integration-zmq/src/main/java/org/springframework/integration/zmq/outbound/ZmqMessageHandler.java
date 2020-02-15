@@ -24,10 +24,6 @@ import java.nio.charset.Charset;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.zeromq.ZAuth;
-import org.zeromq.ZMQ;
-import org.zeromq.ZMQException;
-
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.integration.zmq.core.DefaultZmqClientFactory;
@@ -37,6 +33,10 @@ import org.springframework.integration.zmq.support.ZmqMessageConverter;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessagingException;
 import org.springframework.util.Assert;
+import org.zeromq.SocketType;
+import org.zeromq.ZAuth;
+import org.zeromq.ZMQ;
+import org.zeromq.ZMQException;
 
 /**
  * ZMQ implementation.
@@ -93,7 +93,7 @@ public class ZmqMessageHandler extends AbstractZmqMessageHandler
 	 * @param clientId The client id.
 	 */
 	public ZmqMessageHandler(String url, String clientId) {
-		this(url, clientId, new DefaultZmqClientFactory(ZMQ.PUB));
+		this(url, clientId, new DefaultZmqClientFactory(SocketType.PUB));
 	}
 
 	@Override
@@ -102,7 +102,7 @@ public class ZmqMessageHandler extends AbstractZmqMessageHandler
 	}
 
 	@Override
-	protected void onInit() throws Exception {
+	protected void onInit() {
 		super.onInit();
 		Assert.state(getConverter() instanceof ZmqMessageConverter,
 				"MessageConverter must be a ZmqMessageConverter");
