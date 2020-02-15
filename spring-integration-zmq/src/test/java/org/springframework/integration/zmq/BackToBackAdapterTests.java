@@ -66,7 +66,6 @@ public class BackToBackAdapterTests {
 		inbound.setBeanFactory(mock(BeanFactory.class));
 		inbound.start();
 		adapter.handleMessage(new GenericMessage<>("foo"));
-		Thread.sleep(50000);
 		Message<?> out = outputChannel.receive(50000);
 		assertNotNull(out);
 		adapter.stop();
@@ -95,7 +94,6 @@ public class BackToBackAdapterTests {
 		inbound.setConverter(converter);
 		inbound.start();
 		adapter.handleMessage(new GenericMessage<Foo>(new Foo("bar")));
-		Thread.sleep(50000);
 		Message<?> out = outputChannel.receive(50000);
 		assertNotNull(out);
 		adapter.stop();
@@ -103,7 +101,6 @@ public class BackToBackAdapterTests {
 		assertEquals(new Foo("bar"), out.getPayload());
 	}
 
-	@Ignore
 	@Test
 	public void testAddRemoveTopic() throws Exception {
 		ZmqMessageHandler adapter = new ZmqMessageHandler("tcp://*:5557", "serverId");
@@ -122,7 +119,6 @@ public class BackToBackAdapterTests {
 		inbound.setBeanFactory(mock(BeanFactory.class));
 		inbound.start();
 		adapter.handleMessage(new GenericMessage<>("foo"));
-		Thread.sleep(50000);
 		Message<?> out = outputChannel.receive(50000);
 		assertNotNull(out);
 		assertEquals("zmq-foo foo", out.getPayload());
@@ -130,7 +126,6 @@ public class BackToBackAdapterTests {
 		adapter.removeTopic("zmq-foo");
 		inbound.removeTopic("zmq-foo");
 		adapter.handleMessage(new GenericMessage<>("foo"));
-		Thread.sleep(50000);
 		out = outputChannel.receive(50000);
 		assertNotNull(out);
 		assertEquals("foo", out.getPayload());

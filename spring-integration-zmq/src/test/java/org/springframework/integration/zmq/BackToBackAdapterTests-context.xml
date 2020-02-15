@@ -20,10 +20,14 @@
 	</int:channel>
 
 	<bean id="outClientFactory" class="org.springframework.integration.zmq.core.DefaultZmqClientFactory">
-		<property name="clientType" value="1"/>
+		<constructor-arg>
+			<value type="org.zeromq.SocketType">PUB</value>
+		</constructor-arg>
 	</bean>
 	<bean id="inClientFactory"  class="org.springframework.integration.zmq.core.DefaultZmqClientFactory">
-		<property name="clientType" value="2"/>
+		<constructor-arg>
+			<value type="org.zeromq.SocketType">SUB</value>
+		</constructor-arg>
 	</bean>
 
 </beans>

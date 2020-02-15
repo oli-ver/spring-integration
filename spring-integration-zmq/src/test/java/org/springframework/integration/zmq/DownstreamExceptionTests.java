@@ -119,8 +119,7 @@ public class DownstreamExceptionTests {
 		service.barrier.reset();
 		adapter2.handleMessage(new GenericMessage<String>("foo"));
 		service.barrier.await(10, TimeUnit.SECONDS);
-		Thread.sleep(10000);
-		assertNotNull(errors.receive());
+		assertNotNull(errors.receive(10000));
 		service.barrier.reset();
 		adapter2.stop();
 	}

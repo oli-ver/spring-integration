@@ -33,8 +33,11 @@
 											error-channel="errors"
 											channel="out"/>
 
-	<bean id="inClientFactory1"  class="org.springframework.integration.zmq.core.DefaultZmqClientFactory">
-		<property name="clientType" value="2"/>
+	<bean id="inClientFactory1"
+		class="org.springframework.integration.zmq.core.DefaultZmqClientFactory">
+				<constructor-arg>
+			<value type="org.zeromq.SocketType">SUB</value>
+		</constructor-arg>
 	</bean>
 
 	<bean id="myConverter" class="org.springframework.integration.zmq.support.DefaultZmqMessageConverter"/>
