@@ -82,6 +82,8 @@
 					  value="org.assertj.core.api.Assertions.*,
 				org.assertj.core.api.Assumptions.*,
 				org.awaitility.Awaitility.*,
+				org.hamcrest.CoreMatchers.*,
+				org.junit.Assert.*,
 				org.mockito.Mockito.*,
 				org.mockito.BDDMockito.*,
 				org.mockito.AdditionalAnswers.*,
